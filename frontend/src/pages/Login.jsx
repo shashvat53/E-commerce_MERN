@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import singnLogo from "../assets/signin.gif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
+import { Loginapi } from "../helpers/Auth";
+import { toast } from "react-toastify";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [data, setData] = useState({
     email: "",
@@ -21,13 +24,27 @@ const Login = () => {
     });
     // console.log(data, "1");
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(data, "submit");
+    // console.log(data, "submit");
+    try {
+      const result = await Loginapi(data);
+      console.log(result);
+      if (result?.response?.data?.error) {
+        toast.error(result?.response?.data?.message);
+      }
+      if (result?.data?.success) {
+        toast.success(result?.data?.message);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.message);
+    }
   };
   return (
     <section>
-      <div className="container mx-auto p-4 md:pt-16 pt-0 ">
+      <div className="container mx-auto p-4 md:pt-16  ">
         <div className="bg-white rounded-sm w-full max-w-sm m-auto  p-5">
           <div className="w-20 h-20 mx-auto">
             <img src={singnLogo} alt="signinLogo" className="rounded-full" />

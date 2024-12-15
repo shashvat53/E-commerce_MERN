@@ -10,3 +10,12 @@ export const SignUp = async (data) => {
     return error.response;
   }
 };
+
+export const Loginapi = async (data) => {
+  try {
+    const res = await apiInstance.post("/login", data);
+    return res;
+  } catch (error) {
+    return error;
+  }
+};

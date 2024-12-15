@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import singnLogo from "../assets/signin.gif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
 import { SignUp } from "../helpers/Auth";
 import { toast } from "react-toastify";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [showPass, setShowPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
   const [data, setData] = useState({
@@ -29,17 +30,23 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(data, "submit");
-    try {
-      const response = await SignUp(data);
-      console.log(response, "666");
-      if (response?.status == 200) {
-        toast.success(response?.data?.message);
-      } else {
-        toast.error(response?.data?.message);
+    if (data?.password === data?.confirmPassword) {
+      try {
+        const response = await SignUp(data);
+        console.log(response, "666");
+        if (response?.data?.success) {
+          toast.success(response?.data?.message);
+          navigate("/login");
+        }
+        if (response?.data?.error) {
+          toast.error(response?.data?.message);
+        }
+      } catch (error) {
+        console.log(error, "888");
+        toast.error(error?.message);
       }
-    } catch (error) {
-      console.log(error, "888");
-      toast.error(error?.message);
+    } else {
+      toast.error("Please check confirm password.");
     }
   };
   return (
